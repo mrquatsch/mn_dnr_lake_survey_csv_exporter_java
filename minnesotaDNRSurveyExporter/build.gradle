@@ -1,0 +1,20 @@
+plugins {
+    id 'java'
+}
+
+group 'com.mikesterry'
+version '1.0'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    implementation 'com.fasterxml:jackson-module-json-org:0.9.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.8'
+    implementation 'org.apache.poi:poi:3.1.5'
+    implementation 'org.apache.poi:poi-ooxml:3.15'
+}
