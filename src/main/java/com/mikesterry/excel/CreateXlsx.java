@@ -55,7 +55,7 @@ public class CreateXlsx {
     public void createOutputFile() {
         File currDir = new File(".");
         String path = currDir.getAbsolutePath();
-        String fileLocation = path.substring(0, path.length() - 1) + "temp.xlsx";
+        String fileLocation = path.substring(0, path.length() - 1) + "surveys.xlsx";
 
         try {
             FileOutputStream outputStream = new FileOutputStream( fileLocation );
