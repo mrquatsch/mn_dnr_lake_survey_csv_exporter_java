@@ -23,11 +23,12 @@ public class Website {
         BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
 
         String inputLine;
+        StringBuilder stringBuilder = new StringBuilder();
         while((inputLine = in.readLine()) != null) {
-            return inputLine;
+            stringBuilder.append(inputLine);
         }
         in.close();
 
-        return inputLine;
+        return stringBuilder.toString();
     }
 }
