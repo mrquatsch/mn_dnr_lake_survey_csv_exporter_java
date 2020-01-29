@@ -32,4 +32,8 @@ public class Lake {
     public String getNearestTown() {
         return nearestTown;
     }
+
+    public County getCounty() {
+        return county;
+    }
 }
