@@ -3,12 +3,12 @@ package com.mikesterry.runners;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mikesterry.connectors.Website;
-import com.mikesterry.objects.Fish;
 import com.mikesterry.objects.Lake;
 import com.mikesterry.objects.Survey;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 public class GetSurveys implements Runnable {
     private String lakeInfoURL;
@@ -26,7 +26,7 @@ public class GetSurveys implements Runnable {
 
         System.out.println("Gathering surveys for lake: " + lake.getId() + ": " + lake.getName());
         Website lakeSurveyLookup = new Website(lakeInfoURL + lake.getId());
-        System.out.println("Lake survey info url: " + lakeSurveyLookup.getUrl());
+//        System.out.println("Lake survey info url: " + lakeSurveyLookup.getUrl());
 
         try {
             String jsonString = lakeSurveyLookup.getUrlContents();
@@ -53,7 +53,7 @@ public class GetSurveys implements Runnable {
 
                 JsonNode jsonLakeSurveyNode = jsonLakeSurveyNodes.get(mostRecentIndex);
 
-                System.out.println("jsonLakeSurveyArray: " + jsonLakeSurveyNode);
+//                System.out.println("jsonLakeSurveyArray: " + jsonLakeSurveyNode);
                 String surveyDate = jsonLakeSurveyNode.get("surveyDate").toString();
                 String surveySubType = jsonLakeSurveyNode.get("surveySubType").toString();
                 JsonNode lengths = jsonLakeSurveyNode.get("lengths");
@@ -62,39 +62,12 @@ public class GetSurveys implements Runnable {
                 System.out.println("Survey Date: " + survey.getSurveyDate());
                 surveyList.add(survey);
             }
-
-            for(Survey survey : surveyList) {
-                actualObj = mapper.readTree(survey.getLengths().toString());
-                System.out.println("Survey: " + survey.getLengths().toString());
-                for (Iterator<JsonNode> it = survey.getLengths().elements(); it.hasNext(); ) {
-                    JsonNode jsonNode = it.next();
-                    System.out.println("Bleh: " + jsonNode.toString());
-                }
-                for (Iterator<Map.Entry<String, JsonNode>> it = actualObj.fields(); it.hasNext(); ) {
-                    System.out.println(it.toString());
-                    Map.Entry<String, JsonNode> something = it.next();
-                    String speciesName = something.getKey();
-                    System.out.println("Species name: " + speciesName);
-                    Fish fish = new Fish(speciesName);
-                    JsonNode somethingElse = something.getValue().get( "fishCount" );
-//                    System.out.println("FishCount: " + somethingElse);
-                    ArrayList objectMapper = new ObjectMapper().convertValue(somethingElse, ArrayList.class);
-                    for(Object countArray : objectMapper) {
-//                        System.out.println("countArray: " + countArray.toString());
-                        ArrayList objectMapperNew = new ObjectMapper().convertValue(countArray, ArrayList.class);
-                        System.out.println("Length: " + objectMapperNew.get(0).toString());
-                        System.out.println("Count: " + objectMapperNew.get(1).toString());
-                        int length = Integer.parseInt(objectMapperNew.get(0).toString());
-                        int count = Integer.parseInt(objectMapperNew.get(1).toString());
-                        fish.addLengthAndCount(length, count);
-                    }
-                    System.out.println("Fish: " + fish.toString());
-                }
-//                JsonNode fishLengthCounts = actualObj.get("fishCount");
-//                System.out.println(survey.getLengths());
-            }
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public List<Survey> getSurveyList() {
+        return surveyList;
     }
 }

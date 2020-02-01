@@ -27,7 +27,7 @@ public class GetLakes implements Runnable {
 
             System.out.println("Gathering lakes for county: " + county.getName());
             Website lakeIDLookup = new Website(lakeIDLookupURL + county.getId());
-            System.out.println("County lake lookup url: " + lakeIDLookup.getUrl());
+//            System.out.println("County lake lookup url: " + lakeIDLookup.getUrl());
 
             String jsonString = lakeIDLookup.getUrlContents();
             JsonNode actualObj = mapper.readTree(jsonString);
