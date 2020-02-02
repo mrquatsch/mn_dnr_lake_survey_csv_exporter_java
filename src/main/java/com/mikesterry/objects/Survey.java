@@ -26,4 +26,8 @@ public class Survey {
     public JsonNode getLengths() {
         return lengths;
     }
+
+    public Lake getLake() {
+        return lake;
+    }
 }

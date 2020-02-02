@@ -4,9 +4,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import com.mikesterry.connectors.Website;
 import com.mikesterry.objects.County;
 import com.mikesterry.objects.Lake;
-import com.mikesterry.connectors.Website;
 
 import java.util.List;
 
@@ -35,6 +35,7 @@ public class GetLakes implements Runnable {
 
             for(JsonNode lake : jsonLakeArray) {
                 String lakeName = String.valueOf(lake.get("name"));
+                lakeName = removeDoubleQuotesFromString(lakeName);
 
                 // Id needs to be a string - there are leading zeros.
                 // this goes for all ids
@@ -55,5 +56,9 @@ public class GetLakes implements Runnable {
 
     public List<Lake> getLakeList() {
         return this.lakeList;
+    }
+
+    private String removeDoubleQuotesFromString(String input) {
+        return input.replace("\"", "");
     }
 }

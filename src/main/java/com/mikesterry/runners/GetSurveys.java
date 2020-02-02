@@ -59,12 +59,17 @@ public class GetSurveys implements Runnable {
                 JsonNode lengths = jsonLakeSurveyNode.get("lengths");
 
                 Survey survey = new Survey(surveyDate, surveySubType, lengths, lake);
-                System.out.println("Survey Date: " + survey.getSurveyDate());
+//                System.out.println("Survey Date: " + survey.getSurveyDate());
                 surveyList.add(survey);
+                updateLakeSurveyDate(survey.getLake(), surveyDate);
             }
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private void updateLakeSurveyDate(Lake lake, String date) {
+        lake.setMostRecentSurveyDate(date);
     }
 
     public List<Survey> getSurveyList() {

@@ -2,14 +2,15 @@ package com.mikesterry.handlers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mikesterry.excel.CreateXlsx;
 import com.mikesterry.objects.County;
+import com.mikesterry.objects.Fish;
 import com.mikesterry.objects.Lake;
 import com.mikesterry.objects.Survey;
 import com.mikesterry.runners.GetCounties;
 import com.mikesterry.runners.GetFishSpecies;
 import com.mikesterry.runners.GetLakes;
 import com.mikesterry.runners.GetSurveys;
+import com.mikesterry.sorters.SortLakesByCountyNameAndLakeName;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -28,12 +29,65 @@ public class MinnesotaDNRHandler {
         Map<String, String> fishSpeciesMap = getFishSpecies();
         List<County> countyList = getCounties();
         List<Lake> lakeList = getLakes(countyList);
-        List<Survey> surveyList = getSurveys(lakeList);
+
+        List<Lake> shortList = new ArrayList<>();
+        Lake lake = getLakeByNameAndCountyName("Bass", "Faribault", lakeList);
+        if(lake == null) {
+            lake = lakeList.get(1);
+        }
+        shortList.add(lake);
+
+        List<Survey> surveyList = getSurveys(shortList);
+        mapFish(surveyList, fishSpeciesMap);
 
         System.out.println("Gathered " + countyList.size() + " counties");
         System.out.println("... " + lakeList.size() + " lakes");
         System.out.println("... " + surveyList.size() + " surveys");
         System.out.println("... and mapped " + fishSpeciesMap.size() + " types of fish");
+
+        XlsxHandler xlsxHandler = new XlsxHandler();
+        xlsxHandler.createSpeadsheet(lakeList);
+        xlsxHandler.createOutputFile();
+
+//        printEverything(shortList);
+//        printCountiesAndLakesOnly(lakeList);
+    }
+
+    private Lake getLakeByNameAndCountyName(String lakeName, String countyName, List<Lake> lakeList) {
+        for(Lake lake : lakeList) {
+            if(lake.getName().equalsIgnoreCase(lakeName) &&
+                lake.getCounty().getName().equalsIgnoreCase(countyName)) {
+                return lake;
+            }
+        }
+        return null;
+    }
+
+    private void printCountiesAndLakesOnly(List<Lake> lakeList) {
+        // Order list by county name
+        // Probably add lake list to County
+        // Then loop through county list
+        lakeList.sort(new SortLakesByCountyNameAndLakeName());
+        for(Lake lake : lakeList) {
+            System.out.println(lake.getCounty().getName() + "," +
+                    lake.getName() + "," +
+                    lake.getMostRecentSurveyDate());
+        }
+    }
+
+    private void printEverything(List<Lake> lakeList) {
+        // Order list by county name
+        // Probably add lake list to County
+        // Then loop through county list
+        lakeList.sort(new SortLakesByCountyNameAndLakeName());
+        for(Lake lake : lakeList) {
+            for(Fish fish : lake.getFishList()) {
+                System.out.println(lake.getCounty().getName() + "," +
+                        lake.getName() + "," +
+                        lake.getMostRecentSurveyDate() + "," +
+                        fish);
+            }
+        }
     }
 
     private Map<String, String> getFishSpecies() throws Exception {
@@ -104,13 +158,15 @@ public class MinnesotaDNRHandler {
         return surveyList;
     }
 
-    private void mapFish(List<Survey> surveyList) {
+    private void mapFish(List<Survey> surveyList, Map<String, String> fishSpeciesMap) {
             for(Survey survey : surveyList) {
-                System.out.println("Survey: " + survey.getLengths().toString());
+//                System.out.println("Survey: " + survey.getLengths().toString());
 
                 for (Iterator<String> it = survey.getLengths().fieldNames(); it.hasNext(); ) {
                     String abbreviatedName = it.next();
-                    System.out.println("Fish name: " + abbreviatedName);
+                    String commonName = fishSpeciesMap.get(abbreviatedName);
+//                    System.out.println("Fish name: " + commonName);
+                    Fish fish = new Fish(commonName);
 
 //                    System.out.println("Field element: " + survey.getLengths().get(name));
                     JsonNode jsonNode = survey.getLengths().get(abbreviatedName).get("fishCount");
@@ -118,17 +174,14 @@ public class MinnesotaDNRHandler {
                     ArrayList objectMapper = new ObjectMapper().convertValue(jsonNode, ArrayList.class);
                     for(Object countArray : objectMapper) {
                         ArrayList objectMapperNew = new ObjectMapper().convertValue(countArray, ArrayList.class);
-                        System.out.println("Length: " + objectMapperNew.get(0).toString());
-                        System.out.println("Count: " + objectMapperNew.get(1).toString());
+                        int length = Integer.parseInt(objectMapperNew.get(0).toString());
+                        int count = Integer.parseInt(objectMapperNew.get(1).toString());
+//                        System.out.println("Length: " + length);
+//                        System.out.println("Count: " + count);
+                        fish.addLengthAndCount(length, count);
                     }
+                    survey.getLake().addFish(fish);
                 }
             }
-    }
-
-    private void createXlsxFile() {
-        CreateXlsx xlsx = new CreateXlsx();
-        xlsx.createHeader();
-        xlsx.createRow();
-        xlsx.createOutputFile();
     }
 }

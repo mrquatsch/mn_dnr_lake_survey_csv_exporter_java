@@ -24,13 +24,13 @@ public class GetCounties {
 
             for(JsonNode county : jsonCountyArray) {
                 String countyName = String.valueOf(county.get("name"));
+                countyName = removeDoubleQuotesFromString(countyName);
                 String countyID = String.valueOf(county.get("id")).replace("\"", "");
                 System.out.println("County ID int: " + countyID);
 
                 System.out.println("Creating county object for " + countyName);
                 County newCounty = new County(countyID, countyName);
                 countyList.add(newCounty);
-//                break;
             }
         } catch (Exception e ) {
             System.out.println("Failed to pull county results");
@@ -40,5 +40,9 @@ public class GetCounties {
 
     public List<County> getCountyList() {
         return this.countyList;
+    }
+
+    private String removeDoubleQuotesFromString(String input) {
+        return input.replace("\"", "");
     }
 }
