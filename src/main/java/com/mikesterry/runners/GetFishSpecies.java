@@ -3,6 +3,7 @@ package com.mikesterry.runners;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mikesterry.connectors.Website;
+import com.mikesterry.util.Constants;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -10,12 +11,11 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class GetFishSpecies {
-    private final String FISH_SPECIES_URL = "http://maps2.dnr.state.mn.us/lakefinder/lib/lakefinder.js";
     private Map<String, String> speciesMap;
-    Website fishSpeciesLookup;
+    private Website fishSpeciesLookup;
 
     public GetFishSpecies() {
-        this.fishSpeciesLookup = new Website(FISH_SPECIES_URL);
+        this.fishSpeciesLookup = new Website(Constants.FISH_SPECIES_INFO_LOOKUP_URL);
         this.speciesMap = new HashMap<>();
     }
 

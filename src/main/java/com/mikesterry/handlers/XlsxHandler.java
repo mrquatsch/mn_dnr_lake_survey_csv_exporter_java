@@ -54,13 +54,13 @@ public class XlsxHandler {
             List<Fish> fishList = lake.getFishList();
             fishList.sort(new SortFishByCommonName());
             if (fishList.size() <= 0) {
-                System.out.println("No fish found for lake: " + lake.getName());
+                System.out.println("No fish found for lake: " + lake);
             }
             for (Fish fish : fishList) {
-                createNormalCell(lake.getCounty().getName());
                 createNormalCell(lake.getName());
                 createNormalCell(lake.getId());
                 createNormalCell(lake.getNearestTown());
+                createNormalCell(lake.getCounty().getName());
                 createNormalCell(lake.getMostRecentSurveyDate());
                 createNormalCell(fish.getCommonName());
                 createNormalCell(fish.getTotalCount());

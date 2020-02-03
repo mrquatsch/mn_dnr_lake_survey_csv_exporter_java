@@ -89,4 +89,9 @@ public class Lake {
         }
         return count;
     }
+
+    @Override
+    public String toString() {
+        return name + ": " + id;
+    }
 }

@@ -19,25 +19,32 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 public class MinnesotaDNRHandler {
+    private final java.util.logging.Logger LOGGER = Logger.getLogger(GetSurveys.class.getName());
 
     public MinnesotaDNRHandler() {
     }
 
     public void run() throws Exception {
+        LOGGER.info("Gathering fish species map...");
         Map<String, String> fishSpeciesMap = getFishSpecies();
+        LOGGER.info("Gathering counties...");
         List<County> countyList = getCounties();
+        LOGGER.info("Gathering lakes...");
         List<Lake> lakeList = getLakes(countyList);
 
-        List<Lake> shortList = new ArrayList<>();
-        Lake lake = getLakeByNameAndCountyName("Bass", "Faribault", lakeList);
-        if(lake == null) {
-            lake = lakeList.get(1);
-        }
-        shortList.add(lake);
+//        List<Lake> shortList = new ArrayList<>();
+//        Lake lake = getLakeByNameAndCountyName("Bass", "Faribault", lakeList);
+//        if(lake == null) {
+//            lake = lakeList.get(1);
+//        }
+//        shortList.add(lake);
 
+        LOGGER.info("Gathering surveys...");
         List<Survey> surveyList = getSurveys(lakeList);
+        LOGGER.info("Mapping fish for surveys...");
         mapFish(surveyList, fishSpeciesMap);
 
         System.out.println("Gathered " + countyList.size() + " counties");
@@ -45,6 +52,7 @@ public class MinnesotaDNRHandler {
         System.out.println("... " + surveyList.size() + " surveys");
         System.out.println("... and mapped " + fishSpeciesMap.size() + " types of fish");
 
+        LOGGER.info("Creating spreadsheet...");
         XlsxHandler xlsxHandler = new XlsxHandler();
         xlsxHandler.createSpeadsheet(lakeList);
         xlsxHandler.createOutputFile();

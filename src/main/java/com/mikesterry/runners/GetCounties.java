@@ -4,16 +4,18 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mikesterry.objects.County;
 import com.mikesterry.connectors.Website;
+import com.mikesterry.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class GetCounties {
     private List<County> countyList = new ArrayList<>();
+    private final Logger LOGGER = Logger.getLogger(GetCounties.class.getName());
 
     public void run() {
-        Website countyIDLookup = new Website("http://maps1.dnr.state.mn.us/cgi-bin/gazetteer2.cgi?type=county&_=1517509749935");
-
+        Website countyIDLookup = new Website(Constants.COUNTY_INFO_LOOKUP_URL);
         ObjectMapper mapper = new ObjectMapper();
 
         try {
@@ -21,20 +23,13 @@ public class GetCounties {
             JsonNode actualObj = mapper.readTree(jsonString);
             JsonNode jsonCountyArray = actualObj.get("results");
 
-
-            for(JsonNode county : jsonCountyArray) {
-                String countyName = String.valueOf(county.get("name"));
-                countyName = removeDoubleQuotesFromString(countyName);
-                String countyID = String.valueOf(county.get("id")).replace("\"", "");
-                System.out.println("County ID int: " + countyID);
-
-                System.out.println("Creating county object for " + countyName);
-                County newCounty = new County(countyID, countyName);
-                countyList.add(newCounty);
+            for(JsonNode jsonNodeCounty : jsonCountyArray) {
+                County county = createCountyFromJsonNode(jsonNodeCounty);
+                countyList.add(county);
             }
         } catch (Exception e ) {
-            System.out.println("Failed to pull county results");
-            System.out.println(e.getMessage());
+            LOGGER.warning("Failed to pull county results");
+            LOGGER.warning(e.getMessage());
         }
     }
 
@@ -44,5 +39,15 @@ public class GetCounties {
 
     private String removeDoubleQuotesFromString(String input) {
         return input.replace("\"", "");
+    }
+
+    private County createCountyFromJsonNode(JsonNode county) {
+        String countyName = String.valueOf(county.get("name"));
+        countyName = removeDoubleQuotesFromString(countyName);
+        String countyID = String.valueOf(county.get("id"));
+        countyID = removeDoubleQuotesFromString(countyID);
+        LOGGER.info("County ID int: " + countyID);
+        LOGGER.info("Creating county object for " + countyName);
+        return new County(countyID, countyName);
     }
 }
