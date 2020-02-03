@@ -53,7 +53,11 @@ public class XlsxHandler {
         createSpreadSheetFilter();
         resizeColumns();
     }
-
+    /*
+    Note: We convert ID to int here since it has to be a string everywhere else due
+    to the leading zeros. Might be worth validating it is always a set length. If so
+    maybe just append zeros to the id when needed? 
+     */
     private void createCellsForLakesAndFish(List<Lake> lakeList) {
         for(Lake lake : lakeList) {
             List<Fish> fishList = lake.getFishList();
@@ -63,7 +67,7 @@ public class XlsxHandler {
             }
             for (Fish fish : fishList) {
                 createNormalCell(lake.getName());
-                createNormalCell(lake.getId());
+                createNormalCell(Integer.parseInt(lake.getId()));
                 createNormalCell(lake.getNearestTown());
                 createNormalCell(lake.getCounty().getName());
                 createNormalCell(lake.getMostRecentSurveyDate());

@@ -73,14 +73,18 @@ public class GetSurveys implements Runnable {
         long mostRecent = 0;
         int mostRecentIndex = 0;
         for (int i = 0; i < jsonLakeSurveyNodes.size(); i++) {
-            String surveyDate = jsonLakeSurveyNodes.get(i).get("surveyDate").toString();
-            surveyDate = removeDoubleQuotesFromString(surveyDate);
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd");
-            Date date = df.parse(surveyDate);
-            long epoch = date.getTime();
-            if(epoch > mostRecent) {
-                mostRecentIndex = i;
-                mostRecent = epoch;
+            // Only capture surveys that have something set in the length section
+            JsonNode lengths = jsonLakeSurveyNodes.get(i).get("lengths");
+            if(lengths.size() > 0) {
+                String surveyDate = jsonLakeSurveyNodes.get(i).get("surveyDate").toString();
+                surveyDate = removeDoubleQuotesFromString(surveyDate);
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd");
+                Date date = df.parse(surveyDate);
+                long epoch = date.getTime();
+                if (epoch > mostRecent) {
+                    mostRecentIndex = i;
+                    mostRecent = epoch;
+                }
             }
         }
 
