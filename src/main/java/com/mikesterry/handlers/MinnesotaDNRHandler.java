@@ -37,7 +37,7 @@ public class MinnesotaDNRHandler {
         }
         shortList.add(lake);
 
-        List<Survey> surveyList = getSurveys(shortList);
+        List<Survey> surveyList = getSurveys(lakeList);
         mapFish(surveyList, fishSpeciesMap);
 
         System.out.println("Gathered " + countyList.size() + " counties");

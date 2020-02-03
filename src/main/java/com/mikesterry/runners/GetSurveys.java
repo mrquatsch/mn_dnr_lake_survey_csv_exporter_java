@@ -55,6 +55,7 @@ public class GetSurveys implements Runnable {
 
 //                System.out.println("jsonLakeSurveyArray: " + jsonLakeSurveyNode);
                 String surveyDate = jsonLakeSurveyNode.get("surveyDate").toString();
+                surveyDate = removeDoubleQuotesFromString(surveyDate);
                 String surveySubType = jsonLakeSurveyNode.get("surveySubType").toString();
                 JsonNode lengths = jsonLakeSurveyNode.get("lengths");
 
@@ -70,6 +71,10 @@ public class GetSurveys implements Runnable {
 
     private void updateLakeSurveyDate(Lake lake, String date) {
         lake.setMostRecentSurveyDate(date);
+    }
+
+    private String removeDoubleQuotesFromString(String input) {
+        return input.replace("\"", "");
     }
 
     public List<Survey> getSurveyList() {

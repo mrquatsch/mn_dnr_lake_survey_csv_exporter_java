@@ -43,6 +43,7 @@ public class GetLakes implements Runnable {
                 ObjectReader reader = mapper.readerFor( new TypeReference<List<String>>() {});
                 List<String> invasiveSpecies = reader.readValue(lake.get("invasiveSpecies"));
                 String nearestTown = String.valueOf(lake.get("nearest_town"));
+                nearestTown = removeDoubleQuotesFromString(nearestTown);
 
                 System.out.println("Creating lake object for " + lakeName);
                 Lake newLake = new Lake(lakeID, lakeName, invasiveSpecies, nearestTown, county);
