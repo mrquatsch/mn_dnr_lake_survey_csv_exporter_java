@@ -9,6 +9,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -36,6 +37,7 @@ public class XlsxHandler {
     }
 
     public void createSpeadsheet(List<Lake>lakeList) {
+        sheet.setDefaultRowHeightInPoints(20);
         setHeaderStyle();
         setCellStyle();
 
@@ -47,6 +49,9 @@ public class XlsxHandler {
 
         lakeList.sort(new SortLakesByLakeNameCountyName());
         createCellsForLakesAndFish(lakeList);
+
+        createSpreadSheetFilter();
+        resizeColumns();
     }
 
     private void createCellsForLakesAndFish(List<Lake> lakeList) {
@@ -119,6 +124,24 @@ public class XlsxHandler {
     private void setCellStyle() {
         this.cellStyle = workbook.createCellStyle();
         cellStyle.setWrapText(true);
+    }
+
+    private void createSpreadSheetFilter() {
+        int firstRow = 0;
+        int lastRow = row.getRowNum();
+        int firstColumn = 0;
+        int lastColumn = this.cell.getColumnIndex();
+        System.out.println("Creating filter with - first row: " + firstRow +
+                " last row: " + lastRow + " first column: " + firstColumn +
+                " last column: " + lastColumn);
+        sheet.setAutoFilter(new CellRangeAddress(firstRow, lastRow, firstColumn, lastColumn));
+    }
+
+    private void resizeColumns() {
+        int lastColumn = this.cell.getColumnIndex();
+        for (int i = 0; i < lastColumn ; i++) {
+            sheet.autoSizeColumn(i);
+        }
     }
 
     public void createOutputFile() {
