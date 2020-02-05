@@ -6,10 +6,10 @@ import com.mikesterry.objects.County;
 import com.mikesterry.objects.Fish;
 import com.mikesterry.objects.Lake;
 import com.mikesterry.objects.Survey;
-import com.mikesterry.runners.GetCounties;
-import com.mikesterry.runners.GetFishSpecies;
-import com.mikesterry.runners.GetLakes;
-import com.mikesterry.runners.GetSurveys;
+import com.mikesterry.runners.CountiesRunner;
+import com.mikesterry.runners.FishSpeciesRunner;
+import com.mikesterry.runners.LakesRunner;
+import com.mikesterry.runners.SurveysRunner;
 import com.mikesterry.sorters.SortLakesByCountyNameAndLakeName;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class MinnesotaDNRHandler {
-    private final java.util.logging.Logger LOGGER = Logger.getLogger(GetSurveys.class.getName());
+    private final java.util.logging.Logger LOGGER = Logger.getLogger(SurveysRunner.class.getName());
 
     public MinnesotaDNRHandler() {
     }
@@ -54,8 +54,8 @@ public class MinnesotaDNRHandler {
 
         LOGGER.info("Creating spreadsheet...");
         XlsxHandler xlsxHandler = new XlsxHandler();
-        xlsxHandler.createSpeadsheet(lakeList);
-        xlsxHandler.createOutputFile();
+        xlsxHandler.createSpeadsheetFromLakeList(lakeList);
+        new FileHandler().createOutputFileFromWorkbook("surveys.xlsx", xlsxHandler.getWorkbook());
 
 //        printEverything(shortList);
 //        printCountiesAndLakesOnly(lakeList);
@@ -99,14 +99,14 @@ public class MinnesotaDNRHandler {
     }
 
     private Map<String, String> getFishSpecies() throws Exception {
-        GetFishSpecies getFishSpecies = new GetFishSpecies();
-        getFishSpecies.getFishSpecies();
-        return getFishSpecies.getSpeciesMap();
+        FishSpeciesRunner fishSpeciesRunner = new FishSpeciesRunner();
+        fishSpeciesRunner.getFishSpecies();
+        return fishSpeciesRunner.getSpeciesMap();
     }
 
     private List<County> getCounties() {
         // Get our list of counties
-        GetCounties counties = new GetCounties();
+        CountiesRunner counties = new CountiesRunner();
         counties.run();
         return counties.getCountyList();
     }
@@ -124,7 +124,7 @@ public class MinnesotaDNRHandler {
         ExecutorService pool = Executors.newFixedThreadPool(50);
         try {
             for(County county : countyList) {
-                pool.submit(new GetLakes(county, lakeList));
+                pool.submit(new LakesRunner(county, lakeList));
             }
         } catch(Exception e) {
             System.out.println(e);
@@ -149,7 +149,7 @@ public class MinnesotaDNRHandler {
         ExecutorService pool = Executors.newFixedThreadPool(50);
         try {
             for(Lake lake : lakeList) {
-                pool.submit(new GetSurveys(lake, surveyList));
+                pool.submit(new SurveysRunner(lake, surveyList));
             }
         } catch(Exception e) {
             System.out.println(e);

@@ -32,7 +32,7 @@ public class Fish {
     }
 
     public Map<Integer, Integer> getLengthAndCount() {
-        return lengthAndCount;
+        return new HashMap<>(lengthAndCount);
     }
 
     public int getFishCountWithinRange(int startingNumber, int endingNumber) {

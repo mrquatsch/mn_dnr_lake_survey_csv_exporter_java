@@ -14,13 +14,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class GetSurveys implements Runnable {
+public class SurveysRunner implements Runnable {
     private List<Survey> surveyList;
     private Lake lake;
     private ObjectMapper mapper;
-    private final java.util.logging.Logger LOGGER = Logger.getLogger(GetSurveys.class.getName());
+    private final java.util.logging.Logger LOGGER = Logger.getLogger(SurveysRunner.class.getName());
 
-    public GetSurveys(Lake lake, List<Survey> surveyList) {
+    public SurveysRunner(Lake lake, List<Survey> surveyList) {
         this.lake = lake;
         this.surveyList = surveyList;
         this.mapper = new ObjectMapper();

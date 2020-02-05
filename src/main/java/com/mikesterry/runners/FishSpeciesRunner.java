@@ -10,11 +10,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class GetFishSpecies {
+public class FishSpeciesRunner {
     private Map<String, String> speciesMap;
     private Website fishSpeciesLookup;
 
-    public GetFishSpecies() {
+    public FishSpeciesRunner() {
         this.fishSpeciesLookup = new Website(Constants.FISH_SPECIES_INFO_LOOKUP_URL);
         this.speciesMap = new HashMap<>();
     }

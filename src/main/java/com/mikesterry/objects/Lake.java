@@ -6,7 +6,7 @@ import java.util.List;
 public class Lake {
     private String id;
     private String name;
-    private List invasiveSpecies;
+    private List<String> invasiveSpecies;
     private String nearestTown;
     private String mostRecentSurveyDate;
     private County county;
@@ -31,7 +31,7 @@ public class Lake {
     }
 
     public List<String> getInvasiveSpecies() {
-        return invasiveSpecies;
+        return new ArrayList<>(invasiveSpecies);
     }
 
     public String getNearestTown() {
@@ -51,7 +51,7 @@ public class Lake {
     }
 
     public List<Fish> getFishList() {
-        return fishList;
+        return new ArrayList<>(fishList);
     }
 
     public void addFish(Fish fish) {
@@ -92,6 +92,28 @@ public class Lake {
 
     @Override
     public String toString() {
-        return name + ": " + id;
+        return id + ": " + name;
+    }
+
+    /*
+        this.id = id;
+        this.name = name;
+        this.invasiveSpecies = invasiveSpecies;
+        this.nearestTown = nearestTown;
+        this.mostRecentSurveyDate = "";
+        this.county = county;
+        this.fishList = new ArrayList<>();
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if(obj.getClass().equals(Lake.class)) {
+            Lake lake = (Lake) obj;
+            return lake.getId().equals(this.id) &
+                    lake.getName().equals(this.name) &
+                    lake.getNearestTown().equals(this.nearestTown) &
+                    lake.getMostRecentSurveyDate().equals(this.mostRecentSurveyDate) &
+                    lake.getCounty().equals(this.county);
+        }
+        return false;
     }
 }

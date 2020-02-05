@@ -13,10 +13,6 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.List;
 
 public class XlsxHandler {
@@ -36,7 +32,7 @@ public class XlsxHandler {
         this.cellNumber = 0;
     }
 
-    public void createSpeadsheet(List<Lake>lakeList) {
+    public void createSpeadsheetFromLakeList(List<Lake>lakeList) {
         sheet.setDefaultRowHeightInPoints(20);
         setHeaderStyle();
         setCellStyle();
@@ -52,11 +48,13 @@ public class XlsxHandler {
 
         createSpreadSheetFilter();
         resizeColumns();
+
+        new FileHandler().createOutputFileFromWorkbook("surveys.xlsx", workbook);
     }
     /*
     Note: We convert ID to int here since it has to be a string everywhere else due
     to the leading zeros. Might be worth validating it is always a set length. If so
-    maybe just append zeros to the id when needed? 
+    maybe just append zeros to the id when needed?
      */
     private void createCellsForLakesAndFish(List<Lake> lakeList) {
         for(Lake lake : lakeList) {
@@ -148,20 +146,7 @@ public class XlsxHandler {
         }
     }
 
-    public void createOutputFile() {
-        File currDir = new File(".");
-        String path = currDir.getAbsolutePath();
-        // Create date and append to filename
-        String fileLocation = path.substring(0, path.length() - 1) + "surveys.xlsx";
-
-        try {
-            FileOutputStream outputStream = new FileOutputStream( fileLocation );
-            workbook.write( outputStream );
-            workbook.close();
-        } catch(FileNotFoundException fnfe) {
-            System.out.println(fnfe);
-        } catch(IOException ioe) {
-            System.out.println(ioe);
-        }
+    public XSSFWorkbook getWorkbook() {
+        return workbook;
     }
 }

@@ -12,13 +12,13 @@ import com.mikesterry.util.Constants;
 import java.io.IOException;
 import java.util.List;
 
-public class GetLakes implements Runnable {
+public class LakesRunner implements Runnable {
     private List<Lake> lakeList;
     private String lakeIDLookupURL;
     private County county;
     private ObjectMapper mapper;
 
-    public GetLakes(County county, List<Lake> lakeList) {
+    public LakesRunner(County county, List<Lake> lakeList) {
         lakeIDLookupURL = Constants.LAKE_INFO_LOOKUP_URL;
         this.lakeList = lakeList;
         this.county = county;
