@@ -10,7 +10,7 @@ import com.mikesterry.runners.CountiesRunner;
 import com.mikesterry.runners.FishSpeciesRunner;
 import com.mikesterry.runners.LakesRunner;
 import com.mikesterry.runners.SurveysRunner;
-import com.mikesterry.sorters.SortLakesByCountyNameAndLakeName;
+import com.mikesterry.sorters.SortLakesByLakeNameCountyName;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -75,7 +75,7 @@ public class MinnesotaDNRHandler {
         // Order list by county name
         // Probably add lake list to County
         // Then loop through county list
-        lakeList.sort(new SortLakesByCountyNameAndLakeName());
+        lakeList.sort(new SortLakesByLakeNameCountyName());
         for(Lake lake : lakeList) {
             System.out.println(lake.getCounty().getName() + "," +
                     lake.getName() + "," +
@@ -87,7 +87,7 @@ public class MinnesotaDNRHandler {
         // Order list by county name
         // Probably add lake list to County
         // Then loop through county list
-        lakeList.sort(new SortLakesByCountyNameAndLakeName());
+        lakeList.sort(new SortLakesByLakeNameCountyName());
         for(Lake lake : lakeList) {
             for(Fish fish : lake.getFishList()) {
                 System.out.println(lake.getCounty().getName() + "," +

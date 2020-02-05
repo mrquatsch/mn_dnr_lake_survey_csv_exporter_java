@@ -10,6 +10,7 @@ import com.mikesterry.util.Constants;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -57,7 +58,7 @@ public class SurveysRunner implements Runnable {
     }
 
     public List<Survey> getSurveyList() {
-        return surveyList;
+        return new ArrayList<>(surveyList);
     }
 
     private JsonNode getJsonTreeFromString(String jsonString) throws IOException {

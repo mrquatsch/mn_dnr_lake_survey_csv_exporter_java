@@ -48,4 +48,10 @@ public class SurveyTest {
         Survey expectedSurvey = new Survey(surveyDate, surveySubType, lengths, lake);
         Assert.assertEquals(lake, survey.getLake());
     }
+
+    @Test
+    // Would have loved to validate it isn't cloned, but whatever...
+    public void getLengths() {
+        Assert.assertEquals(0, survey.getLengths().size());
+    }
 }
