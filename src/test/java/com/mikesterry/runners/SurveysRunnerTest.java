@@ -11,9 +11,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
@@ -56,6 +57,7 @@ public class SurveysRunnerTest {
     // write some tests to vaidate we're stipping double quotes
 
     private String loadResourceTestFileAsString(String filename) throws IOException {
-        return new String(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(filename)).readAllBytes());
+        return new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(filename).getPath())));
+//        return new String(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(filename)).readAllBytes());
     }
 }

@@ -8,7 +8,8 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
-import java.util.Objects;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
@@ -50,7 +51,8 @@ public class FishSpeciesRunnerTest {
         Assert.assertEquals(expectedResults, results);
     }
 
-    public String loadResourceTestFileAsString(String filename) throws IOException {
-        return new String(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(filename)).readAllBytes());
+    private String loadResourceTestFileAsString(String filename) throws IOException {
+//        return new String(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(filename)).readAllBytes());
+        return new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource(filename).getPath())));
     }
 }
