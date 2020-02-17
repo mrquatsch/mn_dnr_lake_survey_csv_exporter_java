@@ -55,7 +55,6 @@ public class MinnesotaDNRHandler {
         LOGGER.info("Creating spreadsheet...");
         XlsxHandler xlsxHandler = new XlsxHandler();
         xlsxHandler.createSpeadsheetFromLakeList(lakeList);
-        new FileHandler().createOutputFileFromWorkbook("surveys.xlsx", xlsxHandler.getWorkbook());
 
 //        printEverything(shortList);
 //        printCountiesAndLakesOnly(lakeList);
