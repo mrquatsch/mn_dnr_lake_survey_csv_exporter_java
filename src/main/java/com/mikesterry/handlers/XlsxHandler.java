@@ -13,6 +13,10 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.time.Instant;
 import java.util.List;
 
 public class XlsxHandler {
@@ -46,10 +50,17 @@ public class XlsxHandler {
         lakeList.sort(new SortLakesByLakeNameCountyName());
         createCellsForLakesAndFish(lakeList);
 
+        System.out.println("Creating spreadsheet filter...");
         createSpreadSheetFilter();
+
+        System.out.println("Resizing spreadsheet columns...");
         resizeColumns();
 
-        new FileHandler().createOutputFileFromWorkbook("surveys.xlsx", workbook);
+        System.out.println("Locking in top row of spreadsheet...");
+        sheet.createFreezePane(0, 1);
+
+        createOutputFileFromWorkbook("/output/surveys." +
+                Instant.now().toEpochMilli() + ".xlsx");
     }
     /*
     Note: We convert ID to int here since it has to be a string everywhere else due
@@ -133,9 +144,9 @@ public class XlsxHandler {
         int lastRow = row.getRowNum();
         int firstColumn = 0;
         int lastColumn = this.cell.getColumnIndex();
-        System.out.println("Creating filter with - first row: " + firstRow +
-                " last row: " + lastRow + " first column: " + firstColumn +
-                " last column: " + lastColumn);
+//        System.out.println("Creating filter with - first row: " + firstRow +
+//                " last row: " + lastRow + " first column: " + firstColumn +
+//                " last column: " + lastColumn);
         sheet.setAutoFilter(new CellRangeAddress(firstRow, lastRow, firstColumn, lastColumn));
     }
 
@@ -148,5 +159,24 @@ public class XlsxHandler {
 
     public XSSFWorkbook getWorkbook() {
         return workbook;
+    }
+
+    private void createOutputFileFromWorkbook(String fileLocation) {
+//        String fileLocation = createFilePath() + filename;
+
+        try {
+            FileOutputStream outputStream = new FileOutputStream(fileLocation);
+            workbook.write(outputStream);
+            workbook.close();
+        } catch(IOException fnfe) {
+            fnfe.printStackTrace();
+        }
+    }
+
+    private String createFilePath() {
+        File currDir = new File(".");
+        String path = currDir.getAbsolutePath();
+        // Create date and append to filename
+        return path.substring(0, path.length() - 1);
     }
 }
