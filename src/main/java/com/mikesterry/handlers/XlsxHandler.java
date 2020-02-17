@@ -50,10 +50,16 @@ public class XlsxHandler {
         lakeList.sort(new SortLakesByLakeNameCountyName());
         createCellsForLakesAndFish(lakeList);
 
+        System.out.println("Creating spreadsheet filter...");
         createSpreadSheetFilter();
+
+        System.out.println("Resizing spreadsheet columns...");
         resizeColumns();
 
-        createOutputFileFromWorkbook("surveys." +
+        System.out.println("Locking in top row of spreadsheet...");
+        sheet.createFreezePane(0, 1);
+
+        createOutputFileFromWorkbook("/output/surveys." +
                 Instant.now().toEpochMilli() + ".xlsx");
     }
     /*
@@ -138,9 +144,9 @@ public class XlsxHandler {
         int lastRow = row.getRowNum();
         int firstColumn = 0;
         int lastColumn = this.cell.getColumnIndex();
-        System.out.println("Creating filter with - first row: " + firstRow +
-                " last row: " + lastRow + " first column: " + firstColumn +
-                " last column: " + lastColumn);
+//        System.out.println("Creating filter with - first row: " + firstRow +
+//                " last row: " + lastRow + " first column: " + firstColumn +
+//                " last column: " + lastColumn);
         sheet.setAutoFilter(new CellRangeAddress(firstRow, lastRow, firstColumn, lastColumn));
     }
 
@@ -155,11 +161,11 @@ public class XlsxHandler {
         return workbook;
     }
 
-    private void createOutputFileFromWorkbook(String filename) {
-        String fileLocation = createFilePath() + filename;
+    private void createOutputFileFromWorkbook(String fileLocation) {
+//        String fileLocation = createFilePath() + filename;
 
         try {
-            FileOutputStream outputStream = new FileOutputStream( fileLocation );
+            FileOutputStream outputStream = new FileOutputStream(fileLocation);
             workbook.write(outputStream);
             workbook.close();
         } catch(IOException fnfe) {
